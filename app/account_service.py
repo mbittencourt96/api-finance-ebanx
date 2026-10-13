@@ -32,7 +32,7 @@ class AccountService:
             self._accounts[destination] += amount
             return self._accounts[destination]
 
-    def withdraw(self, origin: str, amount: int) -> Optional[int]:
+    def withdraw(self, origin: str, amount: int) -> int:
         if amount <= 0:
             raise InvalidAmount("O valor do saque deve ser maior que zero.")
         """Saca um valor de uma conta existente. 
@@ -47,10 +47,13 @@ class AccountService:
             self._accounts[origin] -= amount
             return self._accounts[origin]
 
-    def transfer(self, origin: str, destination: str, amount: int) -> Optional[Tuple[int, int]]:
+    def transfer(self, origin: str, destination: str, amount: int) -> Tuple[int, int]:
         """Transfere um valor de uma conta de origem para uma de destino.
             Se a origem não existir ou não houver saldo suficiente, nada acontece.
         """
+        if amount <= 0:
+            raise InvalidAmount("O valor da transferência deve ser maior que zero.")
+
         with self._lock:
             if origin not in self._accounts:
                 raise AccountNotFound("A conta de origem não foi encontrada.")
